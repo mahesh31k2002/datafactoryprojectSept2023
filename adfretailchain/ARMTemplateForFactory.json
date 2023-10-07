@@ -1,0 +1,1405 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adfretailchain"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"SqlServeronpremisesIR_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServeronpremisesIR'"
+		},
+		"lsretailchainstorageaccount_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'lsretailchainstorageaccount'"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/demosqlpl')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {
+									"order_month": {
+										"value": "'@{pipeline().parameters.order_month}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"datafloworders": {},
+									"datafloworderitems": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "managedIRsimple",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"order_month": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Practice"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-02T02:39:34Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/managedIRsimple')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pldailyproductrevenue')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow daily product revewnue",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dfcomputdailyproductrevenue",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ordercscsv": {},
+									"orderitemscsv": {},
+									"dailyproductrevsinktoparquet": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "managedIRsimple",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Practice"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-02T02:39:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dfcomputdailyproductrevenue')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/managedIRsimple')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pldailyproductrevenue_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow daily product revewnue",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dfcomputdailyproductrevenue",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ordercscsv": {},
+									"orderitemscsv": {},
+									"dailyproductrevsinktoparquet": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "managedIRsimple",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Practice"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-02T02:39:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dfcomputdailyproductrevenue')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/managedIRsimple')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pldailyproductrevenueloop')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.order_months",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Execute daily product revenue monthly",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "pldailyproductrevenuemonthly",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"order_month": {
+												"value": "@item()",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"order_months": {
+						"type": "array"
+					}
+				},
+				"folder": {
+					"name": "Practice"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-02T02:39:34Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pldailyproductrevenuemonthly')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pldailyproductrevenuemonthly')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "data flow daily revenue product monthly",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dfcomputdailyproductrevenueparams",
+								"type": "DataFlowReference",
+								"parameters": {
+									"order_month": {
+										"value": "'@{pipeline().parameters.order_month}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"ordercscsv": {},
+									"orderitemscsv": {},
+									"dailyproductrevsinktoparquet": {
+										"order_month": {
+											"value": "@pipeline().parameters.order_month",
+											"type": "Expression"
+										}
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"order_month": {
+						"type": "string",
+						"defaultValue": "201307"
+					}
+				},
+				"folder": {
+					"name": "Practice"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-02T02:39:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dfcomputdailyproductrevenueparams')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/plordercsvconverttoparquet')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow order csv to parquet",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "ordersconverttoparquet",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"orderscsv": {},
+									"orderparquet": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Practice"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-02T02:39:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/ordersconverttoparquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/plorderitemsconverttoparquet')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow order items csv to parquet",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "OrderItemsconverttoparquet",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"OrderItemcscsv": {},
+									"OrderItemsparquet": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "Practice"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-02T02:39:33Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/OrderItemsconverttoparquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderItemsCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsretailchainstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "part-00000",
+						"folderPath": "retail_db/order_items",
+						"container": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsretailchainstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderItemsParquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsretailchainstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "retail_db_parquest/order_items",
+						"container": "data"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsretailchainstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderItemsSQL')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "order_item_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "order_item_order_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "order_item_product_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "order_item_quantity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "order_item_subtotal",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "order_item_product_price",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "order_items"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderSQL')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "order_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "order_date",
+						"type": "date"
+					},
+					{
+						"name": "order_customer_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "order_status",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "orders"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrdersCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsretailchainstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "part-00000",
+						"folderPath": "retail_db/orders",
+						"container": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsretailchainstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrdersParquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsretailchainstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "retail_db_parquest/orders",
+						"container": "data"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsretailchainstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dailyproductrevenuemonthlyparquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsretailchainstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"order_month": {
+						"type": "String",
+						"defaultValue": "201401"
+					}
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@concat('retail_db_parquet/daily_product_revenue_monthly/order_month=',dataset().order_month)",
+							"type": "Expression"
+						},
+						"container": "data"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsretailchainstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dsdailyproductrevparquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsretailchainstorageaccount",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "retail_db_parquest/dailyprod_revenue",
+						"container": "data"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsretailchainstorageaccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/orderproductrevenue')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "order_date",
+						"type": "date"
+					},
+					{
+						"name": "order_item_product_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "revnue",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "daily_product_revenue"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/selfhostsampletable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServeronpremisesIR",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "practice"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "sampleno",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "sampletable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlServeronpremisesIR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "managedIRsimple",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/managedIRsimple')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServeronpremisesIR')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServeronpremisesIR_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "selfhostir",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/selfhostir')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/lsretailchainstorageaccount')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('lsretailchainstorageaccount_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/managedIRsimple')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 15,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/selfhostir')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "connect on premises sql server",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderItemsconverttoparquet')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Practice"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "OrderItemsCSV",
+								"type": "DatasetReference"
+							},
+							"name": "OrderItemcscsv"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "OrderItemsParquet",
+								"type": "DatasetReference"
+							},
+							"name": "OrderItemsparquet"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          order_item_id as integer,",
+						"          order_item_order_id as integer,",
+						"          order_item_product_id as integer,",
+						"          order_item_quantity as integer,",
+						"          order_item_subtotal as double,",
+						"          order_item_product_price as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> OrderItemcscsv",
+						"OrderItemcscsv sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          order_item_id,",
+						"          order_item_order_id,",
+						"          order_item_product_id,",
+						"          order_item_quantity,",
+						"          order_item_subtotal,",
+						"          order_item_product_price",
+						"     )) ~> OrderItemsparquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/OrderItemsCSV')]",
+				"[concat(variables('factoryId'), '/datasets/OrderItemsParquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Practice"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "OrderSQL",
+								"type": "DatasetReference"
+							},
+							"name": "datafloworders"
+						},
+						{
+							"dataset": {
+								"referenceName": "OrderItemsSQL",
+								"type": "DatasetReference"
+							},
+							"name": "datafloworderitems"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "orderproductrevenue",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "joinorderswithorderitems"
+						},
+						{
+							"name": "aggregate1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     order_month as string ('2013-07')",
+						"}",
+						"source(output(",
+						"          order_id as integer,",
+						"          order_date as date,",
+						"          order_customer_id as integer,",
+						"          order_status as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     query: (\"select * from orders where order_date like '{$order_month}%'\"),",
+						"     format: 'query') ~> datafloworders",
+						"source(output(",
+						"          order_item_id as integer,",
+						"          order_item_order_id as integer,",
+						"          order_item_product_id as integer,",
+						"          order_item_quantity as integer,",
+						"          order_item_subtotal as double,",
+						"          order_item_product_price as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> datafloworderitems",
+						"datafloworders, datafloworderitems join(order_id == order_item_order_id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     partitionBy('roundRobin', 2),",
+						"     broadcast: 'auto')~> joinorderswithorderitems",
+						"joinorderswithorderitems aggregate(groupBy(order_date,",
+						"          order_item_product_id),",
+						"     totalrevenue = round(sum(order_item_subtotal),2),",
+						"     partitionBy('roundRobin', 2)) ~> aggregate1",
+						"aggregate1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          order_date as date,",
+						"          order_item_product_id as integer,",
+						"          revnue as double",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          order_date,",
+						"          order_item_product_id,",
+						"          revnue = totalrevenue",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/OrderSQL')]",
+				"[concat(variables('factoryId'), '/datasets/OrderItemsSQL')]",
+				"[concat(variables('factoryId'), '/datasets/orderproductrevenue')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Practice"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "OrderSQL",
+								"type": "DatasetReference"
+							},
+							"name": "datafloworders"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"parameters{",
+						"     order_month as string ('2013-07')",
+						"}",
+						"source(output(",
+						"          order_id as integer,",
+						"          order_date as date,",
+						"          order_customer_id as integer,",
+						"          order_status as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     query: (\"select * from orders where order_date like '{$order_month}%'\"),",
+						"     format: 'query') ~> datafloworders",
+						"datafloworders sink(validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     store: 'cache',",
+						"     format: 'inline',",
+						"     output: false,",
+						"     saveOrder: 1) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/OrderSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dfcomputdailyproductrevenue')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Practice"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "OrdersCSV",
+								"type": "DatasetReference"
+							},
+							"name": "ordercscsv"
+						},
+						{
+							"dataset": {
+								"referenceName": "OrderItemsCSV",
+								"type": "DatasetReference"
+							},
+							"name": "orderitemscsv"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "dsdailyproductrevparquet",
+								"type": "DatasetReference"
+							},
+							"name": "dailyproductrevsinktoparquet"
+						}
+					],
+					"transformations": [
+						{
+							"name": "orderstatusfilter"
+						},
+						{
+							"name": "orderjoinorderitems"
+						},
+						{
+							"name": "aggbyprodctanddate"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          order_id as integer,",
+						"          order_date as timestamp,",
+						"          order_customer_id as integer,",
+						"          order_status as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> ordercscsv",
+						"source(output(",
+						"          order_item_id as integer,",
+						"          order_item_order_id as integer,",
+						"          order_item_product_id as integer,",
+						"          order_item_quantity as integer,",
+						"          order_item_subtotal as double,",
+						"          order_item_product_price as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> orderitemscsv",
+						"ordercscsv filter(in(['COMPLETE','CLOSED'],order_status)) ~> orderstatusfilter",
+						"orderstatusfilter, orderitemscsv join(order_id == order_item_order_id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> orderjoinorderitems",
+						"orderjoinorderitems aggregate(groupBy(order_item_product_id,",
+						"          order_date),",
+						"     revenue = round(sum(order_item_subtotal),2)) ~> aggbyprodctanddate",
+						"aggbyprodctanddate sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1) ~> dailyproductrevsinktoparquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/OrdersCSV')]",
+				"[concat(variables('factoryId'), '/datasets/OrderItemsCSV')]",
+				"[concat(variables('factoryId'), '/datasets/dsdailyproductrevparquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dfcomputdailyproductrevenueparams')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Practice"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "OrdersCSV",
+								"type": "DatasetReference"
+							},
+							"name": "ordercscsv"
+						},
+						{
+							"dataset": {
+								"referenceName": "OrderItemsCSV",
+								"type": "DatasetReference"
+							},
+							"name": "orderitemscsv"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "dailyproductrevenuemonthlyparquet",
+								"type": "DatasetReference"
+							},
+							"name": "dailyproductrevsinktoparquet"
+						}
+					],
+					"transformations": [
+						{
+							"name": "orderstatusfilter"
+						},
+						{
+							"name": "orderjoinorderitems"
+						},
+						{
+							"name": "aggbyprodctanddate"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     order_month as string ('201401')",
+						"}",
+						"source(output(",
+						"          order_id as integer,",
+						"          order_date as timestamp,",
+						"          order_customer_id as integer,",
+						"          order_status as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> ordercscsv",
+						"source(output(",
+						"          order_item_id as integer,",
+						"          order_item_order_id as integer,",
+						"          order_item_product_id as integer,",
+						"          order_item_quantity as integer,",
+						"          order_item_subtotal as double,",
+						"          order_item_product_price as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> orderitemscsv",
+						"ordercscsv filter(in(['COMPLETE','CLOSED'],order_status) && toString(toDate(order_date),'yyyyMM') == $order_month) ~> orderstatusfilter",
+						"orderstatusfilter, orderitemscsv join(order_id == order_item_order_id,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> orderjoinorderitems",
+						"orderjoinorderitems aggregate(groupBy(order_item_product_id,",
+						"          order_date),",
+						"     revenue = round(sum(order_item_subtotal),2)) ~> aggbyprodctanddate",
+						"aggbyprodctanddate sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1) ~> dailyproductrevsinktoparquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/OrdersCSV')]",
+				"[concat(variables('factoryId'), '/datasets/OrderItemsCSV')]",
+				"[concat(variables('factoryId'), '/datasets/dailyproductrevenuemonthlyparquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ordersconverttoparquet')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Practice"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "OrdersCSV",
+								"type": "DatasetReference"
+							},
+							"name": "orderscsv"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "OrdersParquet",
+								"type": "DatasetReference"
+							},
+							"name": "orderparquet"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          order_id as integer,",
+						"          order_date as timestamp,",
+						"          order_customer_id as integer,",
+						"          order_status as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> orderscsv",
+						"orderscsv sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> orderparquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/OrdersCSV')]",
+				"[concat(variables('factoryId'), '/datasets/OrdersParquet')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ordersconverttoparquet_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"folder": {
+					"name": "Practice"
+				},
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "OrdersCSV",
+								"type": "DatasetReference"
+							},
+							"name": "orderscsv"
+						}
+					],
+					"sinks": [
+						{
+							"name": "ordersparquet"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          order_id as integer,",
+						"          order_date as timestamp,",
+						"          order_customer_id as integer,",
+						"          order_status as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> orderscsv",
+						"orderscsv sink(validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     store: 'cache',",
+						"     format: 'inline',",
+						"     output: false,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          order_id,",
+						"          order_date,",
+						"          order_customer_id,",
+						"          order_status",
+						"     )) ~> ordersparquet"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/OrdersCSV')]"
+			]
+		}
+	]
+}
