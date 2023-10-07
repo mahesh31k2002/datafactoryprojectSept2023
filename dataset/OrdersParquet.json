@@ -1,0 +1,24 @@
+{
+	"name": "OrdersParquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lsretailchainstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "practice"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "retail_db_parquest/orders",
+				"container": "data"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

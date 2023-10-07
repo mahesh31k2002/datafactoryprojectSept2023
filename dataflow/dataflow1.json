@@ -1,0 +1,102 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"folder": {
+			"name": "Practice"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "OrderSQL",
+						"type": "DatasetReference"
+					},
+					"name": "datafloworders"
+				},
+				{
+					"dataset": {
+						"referenceName": "OrderItemsSQL",
+						"type": "DatasetReference"
+					},
+					"name": "datafloworderitems"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "orderproductrevenue",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinorderswithorderitems"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     order_month as string ('2013-07')",
+				"}",
+				"source(output(",
+				"          order_id as integer,",
+				"          order_date as date,",
+				"          order_customer_id as integer,",
+				"          order_status as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: (\"select * from orders where order_date like '{$order_month}%'\"),",
+				"     format: 'query') ~> datafloworders",
+				"source(output(",
+				"          order_item_id as integer,",
+				"          order_item_order_id as integer,",
+				"          order_item_product_id as integer,",
+				"          order_item_quantity as integer,",
+				"          order_item_subtotal as double,",
+				"          order_item_product_price as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> datafloworderitems",
+				"datafloworders, datafloworderitems join(order_id == order_item_order_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     partitionBy('roundRobin', 2),",
+				"     broadcast: 'auto')~> joinorderswithorderitems",
+				"joinorderswithorderitems aggregate(groupBy(order_date,",
+				"          order_item_product_id),",
+				"     totalrevenue = round(sum(order_item_subtotal),2),",
+				"     partitionBy('roundRobin', 2)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          order_date as date,",
+				"          order_item_product_id as integer,",
+				"          revnue as double",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          order_date,",
+				"          order_item_product_id,",
+				"          revnue = totalrevenue",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

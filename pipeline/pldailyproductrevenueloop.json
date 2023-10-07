@@ -1,0 +1,52 @@
+{
+	"name": "pldailyproductrevenueloop",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.order_months",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute daily product revenue monthly",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pldailyproductrevenuemonthly",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"order_month": {
+										"value": "@item()",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"order_months": {
+				"type": "array"
+			}
+		},
+		"folder": {
+			"name": "Practice"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-10-02T02:39:34Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

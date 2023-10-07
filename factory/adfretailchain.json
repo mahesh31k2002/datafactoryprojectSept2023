@@ -1,0 +1,9 @@
+{
+	"name": "adfretailchain",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "63d8c895-e4f7-490c-afc3-e6e8ad777c7b",
+		"tenantId": "c28ebd59-a842-4e64-b29c-e1ca7c272397"
+	}
+}

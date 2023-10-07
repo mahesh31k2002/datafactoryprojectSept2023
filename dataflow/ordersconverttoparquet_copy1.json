@@ -1,0 +1,50 @@
+{
+	"name": "ordersconverttoparquet_copy1",
+	"properties": {
+		"folder": {
+			"name": "Practice"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "OrdersCSV",
+						"type": "DatasetReference"
+					},
+					"name": "orderscsv"
+				}
+			],
+			"sinks": [
+				{
+					"name": "ordersparquet"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          order_id as integer,",
+				"          order_date as timestamp,",
+				"          order_customer_id as integer,",
+				"          order_status as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> orderscsv",
+				"orderscsv sink(validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: false,",
+				"     saveOrder: 1,",
+				"     mapColumn(",
+				"          order_id,",
+				"          order_date,",
+				"          order_customer_id,",
+				"          order_status",
+				"     )) ~> ordersparquet"
+			]
+		}
+	}
+}

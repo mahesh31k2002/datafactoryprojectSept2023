@@ -1,0 +1,28 @@
+{
+	"name": "OrderItemsCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lsretailchainstorageaccount",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "practice"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "part-00000",
+				"folderPath": "retail_db/order_items",
+				"container": "data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

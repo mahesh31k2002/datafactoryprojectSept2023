@@ -1,0 +1,56 @@
+{
+	"name": "OrderItemsconverttoparquet",
+	"properties": {
+		"folder": {
+			"name": "Practice"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "OrderItemsCSV",
+						"type": "DatasetReference"
+					},
+					"name": "OrderItemcscsv"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "OrderItemsParquet",
+						"type": "DatasetReference"
+					},
+					"name": "OrderItemsparquet"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          order_item_id as integer,",
+				"          order_item_order_id as integer,",
+				"          order_item_product_id as integer,",
+				"          order_item_quantity as integer,",
+				"          order_item_subtotal as double,",
+				"          order_item_product_price as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> OrderItemcscsv",
+				"OrderItemcscsv sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          order_item_id,",
+				"          order_item_order_id,",
+				"          order_item_product_id,",
+				"          order_item_quantity,",
+				"          order_item_subtotal,",
+				"          order_item_product_price",
+				"     )) ~> OrderItemsparquet"
+			]
+		}
+	}
+}

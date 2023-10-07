@@ -1,0 +1,57 @@
+{
+	"name": "pldailyproductrevenuemonthly",
+	"properties": {
+		"activities": [
+			{
+				"name": "data flow daily revenue product monthly",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dfcomputdailyproductrevenueparams",
+						"type": "DataFlowReference",
+						"parameters": {
+							"order_month": {
+								"value": "'@{pipeline().parameters.order_month}'",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"dailyproductrevsinktoparquet": {
+								"order_month": {
+									"value": "@pipeline().parameters.order_month",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"order_month": {
+				"type": "string",
+				"defaultValue": "201307"
+			}
+		},
+		"folder": {
+			"name": "Practice"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-10-02T02:39:33Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,35 @@
+{
+	"name": "orderproductrevenue",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "practice"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "order_date",
+				"type": "date"
+			},
+			{
+				"name": "order_item_product_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "revnue",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "daily_product_revenue"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

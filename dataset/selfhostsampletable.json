@@ -1,0 +1,26 @@
+{
+	"name": "selfhostsampletable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServeronpremisesIR",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "practice"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "sampleno",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "sampletable"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

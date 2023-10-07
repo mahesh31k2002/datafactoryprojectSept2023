@@ -1,0 +1,7 @@
+{
+	"name": "selfhostir",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "connect on premises sql server"
+	}
+}
